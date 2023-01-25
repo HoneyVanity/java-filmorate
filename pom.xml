@@ -46,6 +46,13 @@
 
 	</dependencies>
 
+	<repositories>
+	<repository>
+		<id>local-dir</id>
+		<url>file: C:\Users\79992\.m2</url>
+	</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
