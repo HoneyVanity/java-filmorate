@@ -2,19 +2,27 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exception.UserAlreadyExistsException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
 import java.util.*;
 
+@Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
-    Validator validator = new Validator();
+    private final Validator validator;
     @Setter
     private int userId = 1;
+
+    @Autowired
+    public InMemoryUserStorage(Validator validator) {
+        this.validator = validator;
+    }
 
     @Override
     public List<User> getUsers() {
@@ -52,20 +60,20 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    private void lookUpWhenCreate(User user) throws UserAlreadyExistsException {
+    private void lookUpWhenCreate(User user) throws EntityAlreadyExistsException {
         if (findAll().stream().anyMatch(u ->
-                u.getName().equals(user.getName()) ||
+                u.getName().equals(user.getName()) &&
                         u.getBirthday() == user.getBirthday())) {
-            UserAlreadyExistsException exc = new UserAlreadyExistsException("User already exists");
+            EntityAlreadyExistsException exc = new EntityAlreadyExistsException("User already exists");
             log.warn("Exception generated with message {}", exc.getMessage());
             throw exc;
         }
     }
 
-    private void lookUpWhenUpdate(User user) throws UserNotFoundException {
+    private void lookUpWhenUpdate(User user) throws EntityNotFoundException {
 
         if (!users.containsKey(user.getId())) {
-            UserNotFoundException exc = new UserNotFoundException("Add user first");
+            EntityNotFoundException exc = new EntityNotFoundException("Add user first");
             log.warn("Exception generated with message {}", exc.getMessage());
             throw exc;
         }

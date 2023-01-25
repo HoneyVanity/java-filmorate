@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.test;
+package ru.yandex.practicum.filmorate;
 
 
 import org.junit.jupiter.api.Assertions;
