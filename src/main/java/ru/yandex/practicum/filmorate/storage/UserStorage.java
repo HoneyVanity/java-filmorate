@@ -15,4 +15,12 @@ public interface UserStorage {
 
     User create(User user) throws EntityAlreadyExistsException;
 
+    User addFriend(Long friendId, Long id);
+    User removeFromFriends(Long friendId, Long id);
+
+    List<User> showFriendsInCommon(Long otherId, Long id);
+
+    User getUser(Long id);
+
+    List<User> getUserFriends(Long id);
 }

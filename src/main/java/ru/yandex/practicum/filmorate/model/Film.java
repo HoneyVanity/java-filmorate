@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
     @PositiveOrZero
-    private int id;
+    private Long id;
     @NotEmpty
     private String name;
     @NotEmpty
@@ -18,5 +20,7 @@ public class Film {
     private LocalDate releaseDate;
     @DecimalMin("1")
     private int duration;
+    @Getter
+    private Set<Long> likes = new HashSet<>();
 
 }
