@@ -1,47 +1,24 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 
-    private final UserStorage userStorage;
+    User update(User user);
 
-    public User update(User user) {
-        return userStorage.update(user);
-    }
+    User create(User user);
 
-    public User create(User user) {
-        return userStorage.create(user);
-    }
+    List<User> getUsers();
 
-    public List<User> getUsers() {
-        return userStorage.getUsers();
-    }
+    User addFriend(Long friendId, Long id);
 
-    public User addFriend(Long friendId, Long id) {
-        return userStorage.addFriend(friendId, id);
-    }
+    User removeFromFriends(Long friendId, Long id);
 
-    public User removeFromFriends(Long friendId, Long id) {
-        return userStorage.removeFromFriends(friendId, id);
-    }
+    List<User> showFriendsInCommon(Long otherId, Long id);
 
-    public List<User> showFriendsInCommon(Long otherId, Long id) {
-        return userStorage.showFriendsInCommon(otherId, id);
-    }
+    User getUser(Long id);
 
-    public User getUser(Long id) {
-        return userStorage.getUser(id);
-    }
-
-    public List<User> getUserFriends(Long id) {
-        return userStorage.getUserFriends(id);
-    }
+    List<User> getUserFriends(Long id);
 }

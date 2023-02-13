@@ -18,6 +18,5 @@ public class User {
     private final String email;
     @Past
     private final LocalDate birthday;
-    @Getter
     private Set<Long> friendsList = new HashSet<>();
 }
