@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
@@ -17,11 +20,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
-    private final UserGuard userGuard;
-    private Map<Long, User> users;
+    UserStorage userStorage;
+    UserGuard userGuard;
+    @NonFinal
+    Map<Long, User> users;
 
     public User update(User user) {
 

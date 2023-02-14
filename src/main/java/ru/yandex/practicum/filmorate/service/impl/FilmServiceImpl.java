@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
@@ -19,11 +22,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmServiceImpl implements FilmService {
 
-    private final FilmStorage filmStorage;
-    private final FilmGuard filmGuard;
-    private Map<Long, Film> films;
+    FilmStorage filmStorage;
+    FilmGuard filmGuard;
+    @NonFinal
+    Map<Long, Film> films;
 
     public List<Film> getFilms() {
         return new ArrayList<>(filmStorage.findAll());

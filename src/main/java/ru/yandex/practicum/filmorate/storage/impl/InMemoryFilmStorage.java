@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import lombok.Setter;
@@ -14,12 +17,13 @@ import java.util.*;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Long, Film> films = new HashMap<>();
+    Map<Long, Film> films = new HashMap<>();
 
-    private final Validator validator;
-    @Setter
-    private Long filmId = 1L;
+    Validator validator;
+    @Setter @NonFinal
+    Long filmId = 1L;
 
     @Override
     public Map<Long, Film> getFilms() {
