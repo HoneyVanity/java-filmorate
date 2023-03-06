@@ -1,5 +1,4 @@
-package ru.yandex.practicum.filmorate;
-
+package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +24,13 @@ public class ValidationTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User("login with white spaces", "", "wrong.com",
+        user = new User("login with white spaces",  "wrong.com",
                 LocalDate.of(1994, 7, 7));
         user.setId(1);
+        user.setName("");
 
         film = new Film();
-        film.setId(1);
+        film.setId(1L);
         film.setName("Peripheral");
         film.setDuration(90);
         film.setDescription("Flynne Fisher is a brilliant gamer who works a dead-end job to support her brother and ailing mother. " +
