@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
@@ -11,12 +10,11 @@ import ru.yandex.practicum.filmorate.guard.FilmGuard;
 import ru.yandex.practicum.filmorate.guard.OptionsOfCheck;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +23,8 @@ import java.util.stream.Collectors;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FilmServiceImpl implements FilmService {
 
-    FilmStorage filmStorage;
+    FilmDao filmStorage;
     FilmGuard filmGuard;
-    @NonFinal
-    Map<Long, Film> films;
 
     public List<Film> getFilms() {
         return new ArrayList<>(filmStorage.findAll());
@@ -46,35 +42,31 @@ public class FilmServiceImpl implements FilmService {
     }
 
     public Film addLike(Long id, Long userId) {
-        updateFilmsField();
         filmGuard.check(id, OptionsOfCheck.EXISTS);
-        films.get(id).getLikes().add(userId);
+        filmStorage.addLike(id, userId);
 
-        log.info("User with id {} added like to the film with name {} and id {}",
-                userId,
-                films.get(id).getName(), films.get(id).getId());
-        return films.get(id);
+        log.info("User with id {} added like to the film with id {}",
+                userId, id);
+        return filmStorage.getFilm(id);
     }
 
-    public Film removeLike(Long filmId, Long userId) {
-        updateFilmsField();
-        filmGuard.check(filmId, OptionsOfCheck.EXISTS);
-        if (!films.get(filmId).getLikes().contains(userId)) {
+    public Film removeLike(Long id, Long userId) {
+        filmGuard.check(id, OptionsOfCheck.EXISTS);
+        if (filmStorage.getFilm(id).getLikes().contains(userId)) {
             throw new EntityNotFoundException("User", userId);
         }
-        films.get(filmId).getLikes().remove(userId);
-        log.info("User with id {} removed like to the film with name {} and id {}",
-                userId,
-                films.get(filmId).getName(), films.get(filmId).getId());
-        return films.get(filmId);
+        filmStorage.removeLikeFromFilm(id, userId);
+        log.info("User with id {} removed like to the film with id {}",
+                userId, id);
+        return filmStorage.getFilm(id);
     }
 
     public List<Film> showMostPopularFilms(Long count) {
-        updateFilmsField();
         Comparator<Film> comparator =
                 (f1, f2) -> f2.getLikes().size() - f1.getLikes().size();
 
-        List<Film> mostPopularFilms = films.values().stream()
+        List<Film> mostPopularFilms = filmStorage.findAll()
+                .stream()
                 .sorted(comparator)
                 .limit(count)
                 .collect(Collectors.toList());
@@ -88,10 +80,6 @@ public class FilmServiceImpl implements FilmService {
 
         filmGuard.check(id, OptionsOfCheck.EXISTS);
         return filmStorage.getFilm(id);
-    }
-
-    private void updateFilmsField() {
-        films = filmStorage.getFilms();
     }
 
 }

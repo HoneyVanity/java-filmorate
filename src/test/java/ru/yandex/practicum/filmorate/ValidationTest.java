@@ -1,5 +1,7 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,30 +14,36 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ValidationTest {
-    private Validator validator;
+    Validator validator;
     ru.yandex.practicum.filmorate.validator.Validator customValidator;
-    private Film film;
-    private User user;
+    Film film;
+    User user;
 
     @BeforeEach
     public void setUp() {
-        user = new User("login with white spaces",  "wrong.com",
-                LocalDate.of(1994, 7, 7));
-        user.setId(1);
-        user.setName("");
+        user = User.builder()
+                .id(1L)
+                .name("")
+                .login("login with white spaces")
+                .birthday(LocalDate.of(1994, 7, 7))
+                .email("wrong.com")
+                .build();
 
-        film = new Film();
-        film.setId(1L);
-        film.setName("Peripheral");
-        film.setDuration(90);
-        film.setDescription("Flynne Fisher is a brilliant gamer who works a dead-end job to support her brother and ailing mother. " +
-                "When her brother enlists her help in an advanced game, " +
-                "Flynne sees something she shouldn't, bringing danger to the family's doorstep.");
+        film = Film.builder()
+                .id(1L)
+                .name("Peripheral")
+                .duration(90)
+                .description("Flynne Fisher is a brilliant gamer who works a dead-end job to support her brother and ailing mother. " +
+                        "When her brother enlists her help in an advanced game, " +
+                        "Flynne sees something she shouldn't, bringing danger to the family's doorstep.")
+                .build();
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
