@@ -1,24 +1,23 @@
-package ru.yandex.practicum.filmorate.storage.impl;
+package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
 import java.util.*;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmStorage implements FilmDao {
     Map<Long, Film> films = new HashMap<>();
 
     Validator validator;
@@ -59,6 +58,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film getFilm(Long id) {
 
         return films.get(id);
+    }
+
+    @Override
+    public void addLike(long filmId, long userId) {
+
+    }
+
+    @Override
+    public void removeLikeFromFilm(long filmId, long userId) {
+
     }
 
     private void checkIfExistsByFields(Film film) throws EntityAlreadyExistsException {

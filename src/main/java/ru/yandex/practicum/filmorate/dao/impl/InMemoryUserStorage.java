@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.impl;
+package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,22 +7,19 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.FieldValidationException;
-import ru.yandex.practicum.filmorate.guard.OptionsOfCheck;
-import ru.yandex.practicum.filmorate.guard.UserGuard;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class InMemoryUserStorage implements UserStorage {
+public class InMemoryUserStorage implements UserDao {
     Map<Long, User> users = new HashMap<>();
     Validator validator;
     @Setter @NonFinal
@@ -85,6 +82,21 @@ public class InMemoryUserStorage implements UserStorage {
         log.info("Returned Friends of User with name {} and id {}", users.get(id).getName(), id);
         log.info("Friends listed: " + userFriends);
         return userFriends;
+    }
+
+    @Override
+    public List<User> getCommonFriends(long userId, long otherUserId) {
+        return null;
+    }
+
+    @Override
+    public void addFriend(long userId, long friendId) {
+
+    }
+
+    @Override
+    public void removeFromFriends(long userId, long friendId) {
+
     }
 
     private User replaceNameFieldIfNeeded(User user) {
