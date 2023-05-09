@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class User {
     @NonFinal @PositiveOrZero long id;
@@ -18,5 +17,5 @@ public class User {
     @NonFinal String name;
     @Email String email;
     @Past LocalDate birthday;
-    @NonFinal Set<Long> friendsList;
+    @NonFinal Set<Long> friendsList = new HashSet<>();
 }

@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.guard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 @Component
 @RequiredArgsConstructor
 public class UserGuard extends Guard<User> {
 
-    private final UserDao userStorage;
+    private final UserStorage userStorage;
     @Override
     protected String getGuardClass() {
         return User.class.getName();
