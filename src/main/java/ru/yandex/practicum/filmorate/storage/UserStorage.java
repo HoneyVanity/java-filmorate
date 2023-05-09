@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface UserDao {
+public interface UserStorage {
     Map<Long, User> getUsers();
 
     User update(User user);
@@ -19,10 +19,4 @@ public interface UserDao {
     User getUser(Long id);
 
     List<User> getUserFriends(Long id);
-
-    List<User> getCommonFriends(long userId, long otherUserId);
-
-    void addFriend(long userId, long friendId);
-
-    void removeFromFriends(long userId, long friendId);
 }

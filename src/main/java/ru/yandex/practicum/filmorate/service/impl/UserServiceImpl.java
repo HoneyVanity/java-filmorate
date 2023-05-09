@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
@@ -11,9 +12,10 @@ import ru.yandex.practicum.filmorate.guard.OptionsOfCheck;
 import ru.yandex.practicum.filmorate.guard.UserGuard;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,8 +23,10 @@ import java.util.*;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
-    UserDao userStorage;
+    UserStorage userStorage;
     UserGuard userGuard;
+    @NonFinal
+    Map<Long, User> users;
 
     public User update(User user) {
 
@@ -41,40 +45,49 @@ public class UserServiceImpl implements UserService {
     }
 
     public User addFriend(Long friendId, Long id) {
+        getUsersMap();
         if (id.equals(friendId)) {
             throw new FieldValidationException("friendId", "friendId can not be equal to userId");
         }
         userGuard.check(id, OptionsOfCheck.EXISTS);
         userGuard.check(friendId, OptionsOfCheck.EXISTS);
+        users.get(id).getFriendsList().add(friendId);
+        users.get(friendId).getFriendsList().add(id);
 
-        userStorage.addFriend(id, friendId);
-
-        log.info("User with id {} added a friend with and id {}",
-                id, friendId);
-        return userStorage.getUser(id);
+        log.info("User with name {} and id {} added a friend with name {} and id {}",
+                users.get(id).getName(), users.get(id).getId()
+                , users.get(friendId).getName(), users.get(friendId).getId());
+        return users.get(id);
     }
 
     public User removeFromFriends(Long friendId, Long id) {
+        getUsersMap();
         userGuard.check(id, OptionsOfCheck.EXISTS);
         userGuard.check(friendId, OptionsOfCheck.EXISTS);
-        if (userStorage.getUsers().isEmpty()) {
+        if (!users.get(id).getFriendsList().contains(friendId)) {
             EntityNotFoundException exc = new EntityNotFoundException("User", friendId);
             log.warn("Exception generated with message {}", exc.getMessage());
             throw exc;
         }
-        userStorage.removeFromFriends(id, friendId);
+        users.get(id).getFriendsList().remove(friendId);
 
-        log.info("User with id {} removed a friend with id {}",
-                id, friendId);
-        return userStorage.getUser(id);
+        log.info("User with name {} and id {} removed a friend with name {} and id {}",
+                users.get(id).getName(), users.get(id).getId()
+                , users.get(friendId).getName(), users.get(friendId).getId());
+        return users.get(id);
     }
 
     public List<User> showFriendsInCommon(Long otherId, Long id) {
+        getUsersMap();
         userGuard.check(id, OptionsOfCheck.EXISTS);
         userGuard.check(otherId, OptionsOfCheck.EXISTS);
-        List<User> inCommon = userStorage.getCommonFriends(id, otherId);
-        log.info("User with id {} and user with id {} have {} friends in common: {}",
-                id, otherId,
+        Set<Long> otherUserFriends = new HashSet<>(users.get(otherId).getFriendsList());
+        otherUserFriends.retainAll(users.get(id).getFriendsList());
+        List<User> inCommon = otherUserFriends.stream()
+                .map(users::get).collect(Collectors.toList());
+        log.info("User with name {} and id {} and user with name {} and id {} have {} friends in common: {}",
+                users.get(id).getName(), users.get(id).getId()
+                , users.get(otherId).getName(), users.get(otherId).getId(),
                 inCommon.size(), inCommon);
 
         return inCommon;
@@ -84,6 +97,10 @@ public class UserServiceImpl implements UserService {
 
         userGuard.check(id, OptionsOfCheck.EXISTS);
         return userStorage.getUser(id);
+    }
+
+    private void getUsersMap() {
+        users = userStorage.getUsers();
     }
 
     public List<User> getUserFriends(Long id) {
