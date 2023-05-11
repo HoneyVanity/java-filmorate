@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate.guard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 
 @Component
 @RequiredArgsConstructor
 public class FilmGuard extends Guard<Film> {
-    private final FilmStorage filmStorage;
+    private final FilmDao filmStorage;
 
     @Override
     protected String getGuardClass() {

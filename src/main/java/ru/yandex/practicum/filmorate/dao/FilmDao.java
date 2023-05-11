@@ -1,13 +1,11 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.dao;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.Map;
 
-public interface FilmStorage {
-
-    Map<Long, Film> getFilms();
+public interface FilmDao {
 
     Collection<Film> findAll();
 
@@ -16,4 +14,10 @@ public interface FilmStorage {
     Film update(Film film);
 
     Film getFilm(Long id);
+
+    void addLike(long filmId, long userId);
+
+    Collection<Film> getPopularFilms(long count);
+
+    void removeLikeFromFilm(long filmId, long userId);
 }
