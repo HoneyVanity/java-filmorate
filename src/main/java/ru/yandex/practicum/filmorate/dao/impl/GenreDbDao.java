@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.AccessLevel;
+import
+        lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.queries.GenreQueries;
-import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
