@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import
-        lombok.AccessLevel;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
