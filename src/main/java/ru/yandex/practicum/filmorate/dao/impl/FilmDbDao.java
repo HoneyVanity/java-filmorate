@@ -16,8 +16,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.queries.FilmQueries;
-import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
-import ru.yandex.practicum.filmorate.exception.FieldValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -47,7 +45,6 @@ public class FilmDbDao implements FilmDao {
 
     @Override
     public Film create(Film film) {
-        checkIfExistsByFields(film);
         validator.validateYear(film.getReleaseDate());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")
@@ -65,7 +62,6 @@ public class FilmDbDao implements FilmDao {
         log.info("film {} has been created", film.getName());
         return getFilm(filmId);
     }
-
 
     @Override
     public Film update(Film film) {
@@ -98,7 +94,8 @@ public class FilmDbDao implements FilmDao {
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        Film film = Film.builder()
+
+        return Film.builder()
                 .id(resultSet.getLong("film_id"))
                 .name(resultSet.getString("name"))
                 .description(resultSet.getString("description"))
@@ -107,8 +104,6 @@ public class FilmDbDao implements FilmDao {
                 .mpa(new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name")))
                 .genres((genreDao.getByFilmId(resultSet.getInt("film_id"))))
                 .build();
-        System.out.println(film);
-        return film;
     }
 
     private void updateFilmGenres(List<Genre> genres, long filmId) {
@@ -116,8 +111,6 @@ public class FilmDbDao implements FilmDao {
             return;
         }
 
-//        genres.stream().mapToLong(g -> g.getId())
-//                .forEach(x -> jdbcTemplate.update(FilmQueries.ADD_GENRE, filmId, x));
         List<Integer> genreUniqueIds = genres.stream()
                 .map(Genre::getId)
                 .distinct()
@@ -147,6 +140,7 @@ public class FilmDbDao implements FilmDao {
     public Collection<Film> getPopularFilms(long count) {
         try {
             return jdbcTemplate.query(FilmQueries.GET_POPULAR_FILMS, this::mapRowToFilm, count);
+
         } catch (DataAccessException exception) {
             return null;
         }
@@ -156,12 +150,5 @@ public class FilmDbDao implements FilmDao {
     public void removeLikeFromFilm(long filmId, long userId) {
         jdbcTemplate.update(FilmQueries.REMOVE_LIKE_FROM_FILM, filmId, userId);
     }
-
-    private void checkIfExistsByFields(Film film) throws EntityAlreadyExistsException {
-        if (findAll().stream().anyMatch(f ->
-                f.getName().equals(film.getName()) &&
-                        f.getReleaseDate() == film.getReleaseDate())) {
-            throw new EntityAlreadyExistsException("Film", film.getId());
-        }
-    }
 }
+

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.exception.FieldValidationException;
 import ru.yandex.practicum.filmorate.guard.OptionsOfCheck;
@@ -30,9 +31,25 @@ public class UserServiceImpl implements UserService {
         return userStorage.update(user);
     }
 
+    private boolean emailIsBusy(String email) {
+        return userStorage.findAll().stream()
+                .anyMatch(x -> x.getEmail().equals(email));
+    }
+
     public User create(User user) {
 
         userGuard.check(user.getId(), OptionsOfCheck.PRESENTS);
+
+        if (userStorage.findAll().stream().anyMatch(u ->
+                u.getName().equals(user.getName()) &&
+                        u.getBirthday() == user.getBirthday())) {
+            throw new EntityAlreadyExistsException("User", user.getId());
+        }
+
+        if (emailIsBusy(user.getEmail())) {
+            throw new FieldValidationException("email", "User with this email is already exists");
+        }
+
         return userStorage.create(user);
     }
 
@@ -91,5 +108,4 @@ public class UserServiceImpl implements UserService {
         userGuard.check(id, OptionsOfCheck.EXISTS);
         return userStorage.getUserFriends(id);
     }
-
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.EntityAlreadyExistsException;
 import ru.yandex.practicum.filmorate.guard.FilmGuard;
 import ru.yandex.practicum.filmorate.guard.OptionsOfCheck;
 import ru.yandex.practicum.filmorate.guard.UserGuard;
@@ -31,7 +32,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     public Film create(Film film) {
-
+        checkIfExistsByFields(film);
         filmGuard.check(film.getId(), OptionsOfCheck.PRESENTS);
         return filmDao.create(film);
 
@@ -74,4 +75,12 @@ public class FilmServiceImpl implements FilmService {
         return filmDao.getFilm(id);
     }
 
+    private void checkIfExistsByFields(Film film) {
+        if (filmDao.findAll().stream().anyMatch(f ->
+                f.getName().equals(film.getName()) &&
+                        f.getReleaseDate() == film.getReleaseDate())) {
+            throw new EntityAlreadyExistsException("Film", film.getId());
+        }
+    }
 }
+

@@ -17,7 +17,7 @@ public class FilmGuard extends Guard<Film> {
 
     @Override
     protected Film checkMethod(Long id) {
-        if (filmStorage.findAll().stream().anyMatch(f -> f.getId() == id)) {
+        if (filmStorage.findAll().stream().anyMatch(f -> f.getId().equals(id))) {
             return filmStorage.getFilm(id);
         }
         return null;

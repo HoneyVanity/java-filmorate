@@ -9,5 +9,5 @@ public interface GenreDao {
 
     Collection<Genre> getAll();
 
-    List<Genre> getByFilmId(int film_id);
+    List<Genre> getByFilmId(int filmId);
 }

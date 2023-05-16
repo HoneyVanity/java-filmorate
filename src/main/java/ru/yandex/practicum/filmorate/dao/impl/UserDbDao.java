@@ -67,16 +67,6 @@ public class UserDbDao implements UserDao {
     @Override
     public User create(User user) {
 
-        if (findAll().stream().anyMatch(u ->
-                u.getName().equals(user.getName()) &&
-                        u.getBirthday() == user.getBirthday())) {
-            throw new EntityAlreadyExistsException("User", user.getId());
-        }
-
-        if (emailIsBusy(user.getEmail())) {
-            throw new FieldValidationException("email", "User with this email is already exists");
-        }
-
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -149,9 +139,4 @@ public class UserDbDao implements UserDao {
         jdbcTemplate.update(UserQueries.DELETE_FRIEND, userId, friendId);
     }
 
-    private boolean emailIsBusy(String email) {
-        return findAll()
-                .stream()
-                .anyMatch(x -> x.getEmail().equals(email));
-    }
 }
