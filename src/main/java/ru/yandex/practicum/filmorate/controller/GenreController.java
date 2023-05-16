@@ -15,6 +15,7 @@ import java.util.Collection;
 public class GenreController {
 
     private final GenreService genreService;
+    
     @GetMapping("/{id}")
     public Genre getById(@PositiveOrZero @PathVariable Long id) {
         return genreService.getById(id);
