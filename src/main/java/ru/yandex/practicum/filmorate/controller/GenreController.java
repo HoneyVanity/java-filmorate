@@ -18,14 +18,11 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public Genre getById(@PositiveOrZero @PathVariable Long id) {
-        
         return genreService.getById(id);
     }
 
     @GetMapping
     public Collection<Genre> getGenres() {
-
         return genreService.getGenres();
-        //код
     }
 }
