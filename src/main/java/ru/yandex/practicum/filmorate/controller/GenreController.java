@@ -14,7 +14,6 @@ import java.util.Collection;
 @Validated
 @RequestMapping("/genres")
 public class GenreController {
-
     private final GenreService genreService;
 
     @GetMapping("/{id}")
