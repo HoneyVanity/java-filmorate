@@ -22,5 +22,6 @@ public class GenreController {
     @GetMapping
     public Collection<Genre> getGenres() {
         return genreService.getGenres();
+        //код 
     }
 }
