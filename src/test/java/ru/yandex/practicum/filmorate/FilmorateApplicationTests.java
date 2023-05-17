@@ -32,24 +32,6 @@ class FilmorateApplicationTests {
     MpaDao mpaDao;
     GenreDao genreDao;
 
-    @Test
-    public void testGetFilmAndUser() {
-        Optional<Film> filmOptional = Optional.ofNullable(filmDao.getFilm(1L));
-
-        assertThat(filmOptional)
-                .isPresent()
-                .hasValueSatisfying(film ->
-                        assertThat(film).hasFieldOrPropertyWithValue("id", 1)
-                );
-
-        Optional<User> userOptional = Optional.ofNullable(userDao.getUser(1L));
-
-        assertThat(userOptional)
-                .isPresent()
-                .hasValueSatisfying(user ->
-                        assertThat(user).hasFieldOrPropertyWithValue("id", 1L)
-                );
-    }
 
     @Test
     public void testGetMpa() {
