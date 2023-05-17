@@ -118,7 +118,7 @@ public class UserDbDao implements UserDao {
     }
 
     @Override
-    public List<User> getCommonFriends(long userId, long otherUserId) {
+    public List<User> showFriendsInCommon(long userId, long otherUserId) {
         return jdbcTemplate.query(UserQueries.GET_COMMON_FRIENDS, this::mapRowToUser, userId, otherUserId);
     }
 

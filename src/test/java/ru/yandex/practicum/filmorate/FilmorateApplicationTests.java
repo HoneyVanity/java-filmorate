@@ -104,7 +104,7 @@ class FilmorateApplicationTests {
         assertThat(filmOptional)
                 .isPresent()
                 .hasValueSatisfying(film ->
-                        assertThat(film).hasFieldOrPropertyWithValue("name", "New film")
+                        assertThat(film).hasFieldOrPropertyWithValue("name", "New filmorate film")
                 );
     }
 }

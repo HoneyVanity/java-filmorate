@@ -20,7 +20,7 @@ public interface UserDao {
 
     List<User> getUserFriends(Long id);
 
-    List<User> getCommonFriends(long userId, long otherUserId);
+    List<User> showFriendsInCommon(long userId, long otherUserId);
 
     void addFriend(long userId, long friendId);
 

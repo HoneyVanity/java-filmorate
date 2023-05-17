@@ -19,15 +19,14 @@ public class FilmQueries {
             "mpa_id = ? " +
             "WHERE film_id = ?";
 
-    public static final String GET_POPULAR_FILMS = "SELECT *, " +
+    public static final String GET_POPULAR_FILMS =
             "COUNT(l.film_id) AS likes " +
-            "FROM films AS f " +
-            "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
-            "LEFT JOIN likes AS l ON f.film_id = l.film_id " +
-            "GROUP BY f.film_id, f.name, f.description, f.release_date, f.duration, l.user_id, m.mpa_id, m.mpa_name " +
-            "ORDER BY likes DESC, f.name LIMIT ?";
-    //"Можно сделать join к уже агрегированной таблице as select l.film_id, count(l.film_id) from likes l group by l.film_id и избавиться от группировки по всем полям"
-    //Не получилось написать рабочий sql-запрос по этому комментарию, помоги, пожалуйста.
+                    "FROM films AS f " +
+                    "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                    "LEFT JOIN likes AS l ON f.film_id = l.film_id " +
+                    "GROUP BY f.film_id, f.name, f.description, f.release_date, f.duration, l.user_id, m.mpa_id, m.mpa_name " +
+                    "ORDER BY likes DESC, f.name LIMIT ?";
+
     public static final String DELETE_FILM_GENRES = "DELETE FROM film_genre WHERE film_id = ?";
 
     public static final String ADD_LIKE = "INSERT INTO likes VALUES(?, ?)";

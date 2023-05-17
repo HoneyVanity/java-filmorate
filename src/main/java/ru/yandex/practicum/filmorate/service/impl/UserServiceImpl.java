@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public List<User> showFriendsInCommon(Long otherId, Long id) {
         userGuard.check(id, OptionsOfCheck.EXISTS);
         userGuard.check(otherId, OptionsOfCheck.EXISTS);
-        List<User> inCommon = userStorage.getCommonFriends(id, otherId);
+        List<User> inCommon = userStorage.showFriendsInCommon(id, otherId);
         log.info("User with id {} and user with id {} have {} friends in common: {}",
                 id, otherId,
                 inCommon.size(), inCommon);
