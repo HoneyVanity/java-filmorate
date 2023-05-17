@@ -31,6 +31,7 @@ class FilmorateApplicationTests {
     FilmDao filmDao;
     MpaDao mpaDao;
     GenreDao genreDao;
+
     @Test
     public void testGetFilmAndUser() {
         Optional<Film> filmOptional = Optional.ofNullable(filmDao.getFilm(1L));

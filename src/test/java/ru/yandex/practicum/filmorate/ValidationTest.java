@@ -14,11 +14,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ValidationTest {
     Validator validator;
@@ -55,8 +54,9 @@ public class ValidationTest {
     @DisplayName("Checks if release date is after than 28 of December of 1895")
     public void checkForYearIsAfterThanEarliestAllowed() {
 
-        film.setReleaseDate(LocalDate.of(1894, 12, 28));
-        film.setDescription("short description");
+        film = Film.builder().releaseDate(LocalDate.of(1894, 12, 28))
+                .description("short description")
+                .build();
         Assertions.assertThrows(javax.validation.ValidationException.class,
                 () -> customValidator.validateYear(film.getReleaseDate()));
 
