@@ -13,10 +13,13 @@ import java.util.Set;
 @Builder
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class User {
-    @NonFinal @PositiveOrZero long id;
+    @NonFinal
+    @PositiveOrZero long id;
     @NonNull String login;
-    @NonFinal String name;
+    @NonFinal
+    String name;
     @Email String email;
     @Past LocalDate birthday;
-    @NonFinal Set<Long> friendsList;
+    @NonFinal
+    Set<Long> friendsList;
 }

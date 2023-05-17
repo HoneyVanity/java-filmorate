@@ -23,7 +23,8 @@ import java.util.Collection;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MpaDbDao implements MpaDao {
 
-  JdbcTemplate jdbcTemplate;
+    JdbcTemplate jdbcTemplate;
+
     @Override
     public Collection<Mpa> getAll() {
         return jdbcTemplate.query(MpaQueries.GET_ALL, this::mapRowToRate);
