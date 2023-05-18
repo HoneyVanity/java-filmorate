@@ -41,18 +41,18 @@ public class FilmDbDao implements FilmDao {
     @Override
     public Collection<Film> findAll() {
         Collection<Film> films = jdbcTemplate.query(FilmQueries.GET_ALL, this::mapRowToFilmWithoutGenres);
-        List<Map<Long, Genre>> genres = getGenresWithFilmIdAsMapKey();
-        films.stream()
-                .forEach(film -> {
-                    if (genres.stream().anyMatch(map -> map.containsKey(film.getId()))) {
+        if (!films.isEmpty()) {
+            List<Map<Long, Genre>> genres = getGenresWithFilmIdAsMapKey();
+            films.forEach(film -> {
+                        if (genres.stream().anyMatch(map -> map.containsKey(film.getId()))) {
 
-                        film.setGenres(
-                                genres.stream()
-                                        .map(value -> value.get(film.getId()))
-                                        .collect(Collectors.toList()));
-                    }
-                });
-
+                            film.setGenres(
+                                    genres.stream()
+                                            .map(value -> value.get(film.getId()))
+                                            .collect(Collectors.toList()));
+                        }
+                    });
+        }
         return films;
     }
 
@@ -128,6 +128,7 @@ public class FilmDbDao implements FilmDao {
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .duration(resultSet.getInt("duration"))
                 .mpa(new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name")))
+                .genres(Collections.emptyList())
                 .build();
     }
 
@@ -137,8 +138,8 @@ public class FilmDbDao implements FilmDao {
 
     private Map<Long, Genre> mapRowToGenresWithFilmId(ResultSet resultSet, int rowNum) throws SQLException {
         Long film_id = resultSet.getLong("film_id");
-        Integer genre_id = resultSet.getInt("genre_id");
-        String genre_name = resultSet.getString("name");
+        int genre_id = resultSet.getInt("genre_id");
+        String genre_name = resultSet.getString("genre_name");
 
         return Map.of(film_id, new Genre(genre_id, genre_name));
     }
