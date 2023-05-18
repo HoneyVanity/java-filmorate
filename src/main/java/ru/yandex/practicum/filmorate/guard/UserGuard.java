@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.dao.UserDao;
 @RequiredArgsConstructor
 public class UserGuard extends Guard<User> {
 
-    private final UserDao userStorage;
+    private final UserDao userDao;
 
     @Override
     protected String getGuardClass() {
@@ -18,9 +18,10 @@ public class UserGuard extends Guard<User> {
 
     @Override
     protected User checkMethod(Long id) {
-        if (userStorage.findAll().stream().anyMatch(u -> u.getId() == id)) {
-            return userStorage.getUser(id);
+        try {
+            return userDao.getUser(id);
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 }

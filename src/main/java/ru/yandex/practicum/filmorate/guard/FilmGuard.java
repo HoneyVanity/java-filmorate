@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.dao.FilmDao;
 @Component
 @RequiredArgsConstructor
 public class FilmGuard extends Guard<Film> {
-    private final FilmDao filmStorage;
+    private final FilmDao filmDao;
 
     @Override
     protected String getGuardClass() {
@@ -17,9 +17,10 @@ public class FilmGuard extends Guard<Film> {
 
     @Override
     protected Film checkMethod(Long id) {
-        if (filmStorage.findAll().stream().anyMatch(f -> f.getId().equals(id))) {
-            return filmStorage.getFilm(id);
+        try {
+            return filmDao.getFilm(id);
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 }

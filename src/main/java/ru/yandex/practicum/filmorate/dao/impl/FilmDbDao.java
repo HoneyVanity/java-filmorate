@@ -40,7 +40,20 @@ public class FilmDbDao implements FilmDao {
 
     @Override
     public Collection<Film> findAll() {
-        return jdbcTemplate.query(FilmQueries.GET_ALL, this::mapRowToFilm);
+        Collection<Film> films = jdbcTemplate.query(FilmQueries.GET_ALL, this::mapRowToFilmWithoutGenres);
+        List<Map<Long, Genre>> genres = getGenresWithFilmIdAsMapKey();
+        films.stream()
+                .forEach(film -> {
+                    if (genres.stream().anyMatch(map -> map.containsKey(film.getId()))) {
+
+                        film.setGenres(
+                                genres.stream()
+                                        .map(value -> value.get(film.getId()))
+                                        .collect(Collectors.toList()));
+                    }
+                });
+
+        return films;
     }
 
     @Override
@@ -104,6 +117,30 @@ public class FilmDbDao implements FilmDao {
                 .mpa(new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name")))
                 .genres((genreDao.getByFilmId(resultSet.getInt("film_id"))))
                 .build();
+    }
+
+    private Film mapRowToFilmWithoutGenres(ResultSet resultSet, int rowNum) throws SQLException {
+
+        return Film.builder()
+                .id(resultSet.getLong("film_id"))
+                .name(resultSet.getString("name"))
+                .description(resultSet.getString("description"))
+                .releaseDate(resultSet.getDate("release_date").toLocalDate())
+                .duration(resultSet.getInt("duration"))
+                .mpa(new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name")))
+                .build();
+    }
+
+    private List<Map<Long, Genre>> getGenresWithFilmIdAsMapKey() {
+        return jdbcTemplate.query(FilmQueries.GET_GENRES, this::mapRowToGenresWithFilmId);
+    }
+
+    private Map<Long, Genre> mapRowToGenresWithFilmId(ResultSet resultSet, int rowNum) throws SQLException {
+        Long film_id = resultSet.getLong("film_id");
+        Integer genre_id = resultSet.getInt("genre_id");
+        String genre_name = resultSet.getString("name");
+
+        return Map.of(film_id, new Genre(genre_id, genre_name));
     }
 
     private void updateFilmGenres(List<Genre> genres, long filmId) {

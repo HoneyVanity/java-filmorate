@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -18,5 +19,6 @@ public class Film {
     @Past LocalDate releaseDate;
     @DecimalMin("1") int duration;
     Mpa mpa;
+    @NonFinal
     List<Genre> genres;
 }

@@ -10,6 +10,9 @@ public class FilmQueries {
             "JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
             "WHERE f.film_id = ?";
 
+    public static final String GET_GENRES = "SELECT * " +
+            "FROM genres AS g " +
+            "INNER JOIN film_genre AS fg ON fg.genre_id = g.genre_id";
     public static final String UPDATE = "UPDATE films " +
             "SET " +
             "name = ?, " +
