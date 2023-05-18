@@ -20,7 +20,8 @@ public class FilmQueries {
             "WHERE film_id = ?";
 
     public static final String GET_POPULAR_FILMS =
-            "COUNT(l.film_id) AS likes " +
+            "SELECT *, " +
+                    "COUNT(l.film_id) AS likes " +
                     "FROM films AS f " +
                     "INNER JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
                     "LEFT JOIN likes AS l ON f.film_id = l.film_id " +
