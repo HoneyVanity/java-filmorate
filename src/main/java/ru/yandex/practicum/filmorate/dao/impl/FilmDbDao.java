@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Qualifier
@@ -59,11 +58,10 @@ public class FilmDbDao implements FilmDao {
     }
 
     private Map<Long, Genre> mapRowToGenresWithFilmId(ResultSet resultSet, int rowNum) throws SQLException {
-        Long film_id = resultSet.getLong("film_id");
-        int genre_id = resultSet.getInt("genre_id");
-        String genre_name = resultSet.getString("genre_name");
+        Long filmId = resultSet.getLong("film_id");
 
-        return Map.of(film_id, new Genre(genre_id, genre_name));
+        return Map.of(filmId, new Genre(resultSet.getInt("genre_id"),
+                resultSet.getString("genre_name")));
     }
 
     @Override
