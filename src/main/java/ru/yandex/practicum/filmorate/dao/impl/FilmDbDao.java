@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Qualifier
@@ -43,17 +44,26 @@ public class FilmDbDao implements FilmDao {
         Collection<Film> films = jdbcTemplate.query(FilmQueries.GET_ALL, this::mapRowToFilmWithoutGenres);
         if (!films.isEmpty()) {
             List<Map<Long, Genre>> genres = getGenresWithFilmIdAsMapKey();
-            films.forEach(film -> {
-                        if (genres.stream().anyMatch(map -> map.containsKey(film.getId()))) {
+            films.forEach(film -> film.setGenres(
+                    genres.stream()
+                            .filter(genreMap -> genreMap.containsKey(film.getId()))
+                            .map(genreMap -> genreMap.get(film.getId()))
+                            .collect(Collectors.toList())));
 
-                            film.setGenres(
-                                    genres.stream()
-                                            .map(value -> value.get(film.getId()))
-                                            .collect(Collectors.toList()));
-                        }
-                    });
         }
         return films;
+    }
+
+    private List<Map<Long, Genre>> getGenresWithFilmIdAsMapKey() {
+        return jdbcTemplate.query(FilmQueries.GET_GENRES, this::mapRowToGenresWithFilmId);
+    }
+
+    private Map<Long, Genre> mapRowToGenresWithFilmId(ResultSet resultSet, int rowNum) throws SQLException {
+        Long film_id = resultSet.getLong("film_id");
+        int genre_id = resultSet.getInt("genre_id");
+        String genre_name = resultSet.getString("genre_name");
+
+        return Map.of(film_id, new Genre(genre_id, genre_name));
     }
 
     @Override
@@ -130,18 +140,6 @@ public class FilmDbDao implements FilmDao {
                 .mpa(new Mpa(resultSet.getInt("mpa_id"), resultSet.getString("mpa_name")))
                 .genres(Collections.emptyList())
                 .build();
-    }
-
-    private List<Map<Long, Genre>> getGenresWithFilmIdAsMapKey() {
-        return jdbcTemplate.query(FilmQueries.GET_GENRES, this::mapRowToGenresWithFilmId);
-    }
-
-    private Map<Long, Genre> mapRowToGenresWithFilmId(ResultSet resultSet, int rowNum) throws SQLException {
-        Long film_id = resultSet.getLong("film_id");
-        int genre_id = resultSet.getInt("genre_id");
-        String genre_name = resultSet.getString("genre_name");
-
-        return Map.of(film_id, new Genre(genre_id, genre_name));
     }
 
     private void updateFilmGenres(List<Genre> genres, long filmId) {
