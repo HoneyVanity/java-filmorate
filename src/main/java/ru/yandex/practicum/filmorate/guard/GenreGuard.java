@@ -2,24 +2,23 @@ package ru.yandex.practicum.filmorate.guard;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 @Component
 @RequiredArgsConstructor
-public class UserGuard extends Guard<User> {
-
-    private final UserDao userDao;
+public class GenreGuard extends Guard<Genre> {
+    private final GenreDao genreDao;
 
     @Override
     protected String getGuardClass() {
-        return User.class.getName();
+        return Guard.class.getName();
     }
 
     @Override
-    protected User checkMethod(Long id) {
+    protected Genre checkMethod(Long id) {
         try {
-            return userDao.getUser(id);
+            return genreDao.getById(id);
         } catch (Exception e) {
             return null;
         }
